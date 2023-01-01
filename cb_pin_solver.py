@@ -7,24 +7,24 @@ path0 = np.array([[0,2,2,2,2],
 				[1,1,1,2,2],
 				[1,1,1,1,2],
 				[1,1,1,1,1]]);
-move0 = 0 							# trigger move using if statement
+dir0 = 0 							# trigger direction using if statement
 pin0 = 0  						# index of avaialable pins
 paths = []
-moves = []
+dirs = []
 pins = []
 
 # Fill out first element of matrices
 paths.append(path0)
-moves.append(move0)
+dirs.append(dir0)
 pins.append(pin0)
 
 
-n = sum(sum(path0))
+n = 14				# initial number of pins
 
 while n > 1:
 	# use current path map
 	path0 = paths[-1]
-	move0 = moves[-1]
+	dir0 = dirs[-1]
 	pin0 = pins[-1]
 
 	# find pin index
@@ -32,19 +32,21 @@ while n > 1:
 	r = r[pin0]
 	c = c[pin0]
 
-	# try move
-	for i in range(move0,6):
+	# try move in certain direction
+	for i in range(dir0,6):
 		if i == 0:
 			if r < 2:
 				continue
 			if (path0[r-1,c]==1) and (path0[r-2,c]==0):
-				# make and fill new path map
+				# log changes
+				dirs[-1] = i
+				# make and fill new move
 				paths.append(path0)
+				dirs.append(0)
+				pins.append(0)
 				paths[-1][r,c] = 0
 				paths[-1][r-1,c] = 0
 				paths[-1][r-2,c] = 1
-				# update move number
-				moves[-1] = i
 				break
 			else:
 				continue
@@ -52,17 +54,87 @@ while n > 1:
 			if c > 2:
 				continue
 			if (path0[r,c+1]==1) and (path0[r,c+2]==0):
-				# make and fill new path map
+				# log changes
+				dirs[-1] = i
+				# make and fill new move
 				paths.append(path0)
+				dirs.append(0)
+				pins.append(0)
 				paths[-1][r,c] = 0
-				paths[-1][r-1,c] = 0
-				paths[-1][r-2,c] = 1
-				# update move number
-				moves[-1] = i
-				breaks
+				paths[-1][r,c+1] = 0
+				paths[-1][r,c+2] = 1
+				break
+			else:
+				continue
+		if i == 2:
+			if c > 2 or r > 2:
+				continue
+			if (path0[r+1,c+1]==1) and (path0[r+2,c+2]==0):
+				# log changes
+				dirs[-1] = i
+				# make and fill new move
+				paths.append(path0)
+				dirs.append(0)
+				pins.append(0)
+				paths[-1][r,c] = 0
+				paths[-1][r+1,c+1] = 0
+				paths[-1][r+1,c+2] = 1
+				break
+			else:
+				continue
+		if i == 3:
+			if r > 2:
+				continue
+			if (path0[r+1,c]==1) and (path0[r+2,c]==0):
+				# log changes
+				dirs[-1] = i
+				# make and fill new move
+				paths.append(path0)
+				dirs.append(0)
+				pins.append(0)
+				paths[-1][r,c] = 0
+				paths[-1][r+1,c] = 0
+				paths[-1][r+2,c] = 1
+				break
+			else:
+				continue
+		if i == 4:
+			if c < 2:
+				continue
+			if (path0[r,c-1]==1) and (path0[r,c-2]==0):
+				# make and fill new move
+				paths.append(path0)
+				dirs.append(0)
+				pins.append(0)
+				paths[-1][r,c] = 0
+				paths[-1][r,c-1] = 0
+				paths[-1][r,c-2] = 1
+				break
+			else:
+				continue
+		if i == 5:
+			if r < 2 or c < 2:
+				continue
+			if (path0[r-1,c-1]==1) and (path0[r-2,c-2]==0):
+				# make and fill new move
+				paths.append(path0)
+				dirs.append(0)
+				pins.append(0)
+				paths[-1][r,c] = 0
+				paths[-1][r-1,c-1] = 0
+				paths[-1][r-2,c-2] = 1
+				break			# end of direction choices
+			else:
+				# Progress dirs
+				if pin0+1 < sum(sum(paths[-1])):		# if there are still more pins
+					# change pin
+					pins[-1] += 1
+					dirs[-1] = 0
+				else:									# if there are no more pins to try
+					# delete current branch and go back
+					del paths[-1],dirs[-1],pins[-1]
+
+	n = sum(sum(paths[-1]))
 
 
-
-	# setup for next move
-	path0 = 
-	n = sum(sum(path0))
+print(paths[-1])
