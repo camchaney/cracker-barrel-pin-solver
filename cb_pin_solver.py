@@ -1,5 +1,7 @@
 # Cracker Barrel pin game
 import numpy as np
+import matplotlib.pyplot as plt
+import math
 
 # Initialize matrices
 board0 = np.array([	[0,2,2,2,2],
@@ -163,6 +165,58 @@ while n > 1:
 	# 	print(boards[-1])
 	# 	#print(boards)
 
-
+# Output
+i = 0
 for board in boards:
-	print(board )
+	print(pins[i])
+	print(board)
+	i += 1
+
+# Plot initialization
+fig1 = plt.figure()
+l = len(boards)  						# num sub-plots (number of moves)
+fig1.add_subplot(l, 1, 1)
+for i in range(2, l + 1):
+    fig1.add_subplot(l, 1, i)
+
+# Make blank board
+blank_x = np.array([2.0,
+		1.5,2.5,
+		1.0,2.0,3.0,
+		0.5,1.5,2.5,3.5,
+		0.0,1.0,2.0,3.0,4.0])
+blank_y = np.array([4.0,
+		3.0,3.0,
+		2.0,2.0,2.0,
+		1.0,1.0,1.0,1.0,
+		0.0,0.0,0.0,0.0,0.0])
+blank_y = blank_y * (math.sqrt(3)) / 2
+	
+(r,c) = np.where(boards[0] != 2)		# rows and columns of actual board pieces
+
+for i in range(l):
+	x = []
+	y = []
+	p = 0
+	for j in range(15):
+		if boards[i][r[j],c[j]] == 1:
+			# Filling in pins
+			x.append(blank_x[j])
+			y.append(blank_y[j])
+			# # Marking pin to move
+			# if pins[i] == p:
+			# 	x_pin = blank_x[j]
+			# 	y_pin = blank_y[j]
+			# p += 1
+
+	# Add to subplot
+	fig1.axes[i].scatter(blank_x,blank_y,)
+	fig1.axes[i].scatter(x,y)
+	fig1.axes[i].scatter(x[pins[i]],y[pins[i]])
+	#fig1.axes[2].set_title(f"Motor Plotting")
+	#fig1.axes[i].set_xlabel('Time (s)')
+	#fig1.axes[i].set_ylabel('Motor Command (pwm)')
+	#fig1.axes[i].legend()
+
+print(pins)
+plt.show()
