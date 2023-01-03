@@ -1,6 +1,7 @@
 # Cracker Barrel pin game
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Button
 import math
 
 # Initialize matrices
@@ -165,7 +166,8 @@ while n > 1:
 	# 	print(boards[-1])
 	# 	#print(boards)
 
-# Output
+# Output --------------------------------------------------------------------
+# Simple terminal output
 i = 0
 for board in boards:
 	print(pins[i])
@@ -175,9 +177,9 @@ for board in boards:
 # Plot initialization
 fig1 = plt.figure()
 l = len(boards)  						# num sub-plots (number of moves)
-fig1.add_subplot(l, 1, 1)
-for i in range(2, l + 1):
-    fig1.add_subplot(l, 1, i)
+fig1.add_subplot(1, 1, 1)
+# for i in range(2, l + 1):
+#     fig1.add_subplot(l, 1, i)
 
 # Make blank board
 blank_x = np.array([2.0,
@@ -194,29 +196,58 @@ blank_y = blank_y * (math.sqrt(3)) / 2
 	
 (r,c) = np.where(boards[0] != 2)		# rows and columns of actual board pieces
 
+
+x = []
+y = []
 for i in range(l):
-	x = []
-	y = []
-	p = 0
+	x_temp = []
+	y_temp = []
+	#p = 0
 	for j in range(15):
 		if boards[i][r[j],c[j]] == 1:
 			# Filling in pins
-			x.append(blank_x[j])
-			y.append(blank_y[j])
+			x_temp.append(blank_x[j])
+			y_temp.append(blank_y[j])
 			# # Marking pin to move
 			# if pins[i] == p:
 			# 	x_pin = blank_x[j]
 			# 	y_pin = blank_y[j]
 			# p += 1
+	x.append(x_temp)
+	y.append(y_temp)
 
-	# Add to subplot
-	fig1.axes[i].scatter(blank_x,blank_y,)
-	fig1.axes[i].scatter(x,y)
-	fig1.axes[i].scatter(x[pins[i]],y[pins[i]])
-	#fig1.axes[2].set_title(f"Motor Plotting")
-	#fig1.axes[i].set_xlabel('Time (s)')
-	#fig1.axes[i].set_ylabel('Motor Command (pwm)')
-	#fig1.axes[i].legend()
+# Initialize plot
+ind = 0
+fig1.axes[0].scatter(blank_x,blank_y,)
+fig1.axes[0].scatter(x[ind],y[ind])
+fig1.axes[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
+#fig1.axes[2].set_title(f"Motor Plotting")
+#fig1.axes[i].set_xlabel('Time (s)')
+#fig1.axes[i].set_ylabel('Motor Command (pwm)')
+#fig1.axes[i].legend()
+
+def moveForward(val):
+	global ind
+	if ind < len(x):
+		ind += 1
+		fig1.axes[0].scatter(blank_x,blank_y,)
+		fig1.axes[0].scatter(x[ind],y[ind])
+		fig1.axes[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
+		return ind
+
+def moveBack(val,ind):
+	#global ind
+	if ind > 0:
+		ind -= 1
+		fig1.axes[0].scatter(blank_x,blank_y,)
+		fig1.axes[0].scatter(x[ind],y[ind])
+		fig1.axes[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
+		return ind
+
+# Defining buttons and their functionality
+axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
+bforward = Button(axes, '>',color="yellow")
+bforward.on_clicked(moveForward)
 
 print(pins)
 plt.show()
