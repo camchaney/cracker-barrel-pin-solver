@@ -174,13 +174,6 @@ for board in boards:
 	print(board)
 	i += 1
 
-# Plot initialization
-l = len(boards)  						# num sub-plots (number of moves)
-fig, ax = plt.subplots(1, 1, sharex=True)
-#fig1.add_subplot(1, 1, 1)
-# for i in range(2, l + 1):
-#     fig1.add_subplot(l, 1, i)
-
 # Make blank board
 blank_x = np.array([2.0,
 		1.5,2.5,
@@ -196,9 +189,9 @@ blank_y = blank_y * (math.sqrt(3)) / 2
 	
 (r,c) = np.where(boards[0] != 2)		# rows and columns of actual board pieces
 
-
 x = []
 y = []
+l = len(boards)  						# num sub-plots (number of moves)
 for i in range(l):
 	x_temp = []
 	y_temp = []
@@ -216,40 +209,43 @@ for i in range(l):
 	x.append(x_temp)
 	y.append(y_temp)
 
-# Initialize plot
+# Plot initialization
+fig, ax = plt.subplots(1, 1, sharex=True)
 ind = 0
-[plot_board] = ax[0].plot(blank_x,blank_y)
-[plot_pins] = ax[0].plot(x[ind],y[ind])
-[plot_move] = ax[0].plot(x[ind][pins[ind]],y[ind][pins[ind]])
+ax.plot(blank_x,blank_y,'o')
+[plot_pins] = ax.plot(x[ind],y[ind],'o')
+[plot_move] = ax.plot(x[ind][pins[ind]],y[ind][pins[ind]],'o')
 #ax[2].set_title(f"Motor Plotting")
 #ax[i].set_xlabel('Time (s)')
 #ax[i].set_ylabel('Motor Command (pwm)')
 #ax[i].legend()
 
+def replot():
+	global x, y, pins
+	plot_pins.set_xdata(x[ind])
+	plot_pins.set_ydata(y[ind])
+	plot_move.set_xdata(x[ind][pins[ind]])
+	plot_move.set_ydata(y[ind][pins[ind]])
+
 def moveForward(val):
 	global ind
 	if ind < len(x):
 		ind += 1
-		#ax[0].scatter(blank_x,blank_y,)
-		plot_pins.set_xdata(x[ind])
-		plot_pins.set_ydata(y[ind])
-		plot_move.set_xdata(x[ind][pins[ind]])
-		plot_move.set_ydata(y[ind][pins[ind]])
-		return ind
+		replot()
 
-def moveBack(val,ind):
-	#global ind
+def moveBack(val):
+	global ind
 	if ind > 0:
 		ind -= 1
-		#ax[0].scatter(blank_x,blank_y,)
-		ax[0].scatter(x[ind],y[ind])
-		ax[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
-		return ind
+		replot()
 
 # Defining buttons and their functionality
-axes = plt.axes([0.81, 0.000001, 0.1, 0.075])
-bforward = Button(axes, '>',color="yellow")
-bforward.on_clicked(moveForward)
+axesF = plt.axes([0.81, 0.000001, 0.1, 0.075])
+bForward = Button(axesF, '>',color="yellow")
+bForward.on_clicked(moveForward)
+axesB = plt.axes([0.1, 0.000001, 0.1, 0.075])
+bBack = Button(axesB, '<',color="yellow")
+bBack.on_clicked(moveBack)
 
 print(pins)
 plt.show()
