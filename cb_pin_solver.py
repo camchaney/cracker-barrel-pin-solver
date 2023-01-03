@@ -164,5 +164,5 @@ while n > 1:
 	# 	#print(boards)
 
 
-
-print(boards)
+for board in boards:
+	print(board )
