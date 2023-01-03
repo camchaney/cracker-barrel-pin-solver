@@ -175,9 +175,9 @@ for board in boards:
 	i += 1
 
 # Plot initialization
-fig1 = plt.figure()
 l = len(boards)  						# num sub-plots (number of moves)
-fig1.add_subplot(1, 1, 1)
+fig, ax = plt.subplots(1, 1, sharex=True)
+#fig1.add_subplot(1, 1, 1)
 # for i in range(2, l + 1):
 #     fig1.add_subplot(l, 1, i)
 
@@ -218,30 +218,32 @@ for i in range(l):
 
 # Initialize plot
 ind = 0
-fig1.axes[0].scatter(blank_x,blank_y,)
-fig1.axes[0].scatter(x[ind],y[ind])
-fig1.axes[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
-#fig1.axes[2].set_title(f"Motor Plotting")
-#fig1.axes[i].set_xlabel('Time (s)')
-#fig1.axes[i].set_ylabel('Motor Command (pwm)')
-#fig1.axes[i].legend()
+[plot_board] = ax[0].plot(blank_x,blank_y)
+[plot_pins] = ax[0].plot(x[ind],y[ind])
+[plot_move] = ax[0].plot(x[ind][pins[ind]],y[ind][pins[ind]])
+#ax[2].set_title(f"Motor Plotting")
+#ax[i].set_xlabel('Time (s)')
+#ax[i].set_ylabel('Motor Command (pwm)')
+#ax[i].legend()
 
 def moveForward(val):
 	global ind
 	if ind < len(x):
 		ind += 1
-		fig1.axes[0].scatter(blank_x,blank_y,)
-		fig1.axes[0].scatter(x[ind],y[ind])
-		fig1.axes[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
+		#ax[0].scatter(blank_x,blank_y,)
+		plot_pins.set_xdata(x[ind])
+		plot_pins.set_ydata(y[ind])
+		plot_move.set_xdata(x[ind][pins[ind]])
+		plot_move.set_ydata(y[ind][pins[ind]])
 		return ind
 
 def moveBack(val,ind):
 	#global ind
 	if ind > 0:
 		ind -= 1
-		fig1.axes[0].scatter(blank_x,blank_y,)
-		fig1.axes[0].scatter(x[ind],y[ind])
-		fig1.axes[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
+		#ax[0].scatter(blank_x,blank_y,)
+		ax[0].scatter(x[ind],y[ind])
+		ax[0].scatter(x[ind][pins[ind]],y[ind][pins[ind]])
 		return ind
 
 # Defining buttons and their functionality
